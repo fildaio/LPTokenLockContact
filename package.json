@@ -1,0 +1,19 @@
+{
+  "name": "locktoken",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.4.1",
+    "@truffle/hdwallet-provider": "^1.7.0",
+    "arb-ethers-web3-bridge": "^0.7.3"
+  }
+}
