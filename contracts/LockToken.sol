@@ -17,7 +17,7 @@ contract LockToken is Ownable {
         withdrawTime = _time;
     }
 
-    function setWithdrawalHeight(uint _time) external onlyOwner {
+    function setWithdrawalTime(uint _time) external onlyOwner {
         require(_time > withdrawTime, "new time must greate than save time");
         withdrawTime = _time;
         emit WithdrawTimeChanged(_time);
