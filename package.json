@@ -12,7 +12,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@openzeppelin/contracts": "^3.4.1",
+    "@openzeppelin/contracts": "^4.4.1",
     "@truffle/hdwallet-provider": "^1.7.0",
     "arb-ethers-web3-bridge": "^0.7.3"
   }
