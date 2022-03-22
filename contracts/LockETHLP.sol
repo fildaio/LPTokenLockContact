@@ -9,7 +9,7 @@ import "./interfaces/IUniswapV2Router02.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IUniswapV2Pair.sol";
 
-contract LockLP is Ownable {
+contract LockETHLP is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint;
 
@@ -17,31 +17,25 @@ contract LockLP is Ownable {
 
     IUniswapV2Factory public factory;
     IUniswapV2Router02 public router;
-    address public token0;
-    address public token1;
+    address public token;
+    address public WNative;
 
     address public lp;
 
-    constructor(address _lockContract, address _token0, address _token1, address _router) public {
+    constructor(address _lockContract, address _token, address _wnative, address _router) public {
         require(_lockContract != address(0), "invalid param");
-        require(_token0 != address(0) && _token1 != address(0) && _router != address(0), "invalid param");
+        require(_token != address(0) && _wnative != address(0) && _router != address(0), "invalid param");
 
         lockContract = _lockContract;
 
         router = IUniswapV2Router02(_router);
         factory = IUniswapV2Factory(router.factory());
-        lp = factory.getPair(_token0, _token1);
+        lp = factory.getPair(_token, _wnative);
 
-        if (IUniswapV2Pair(lp).token0() == _token0) {
-            token0 = _token0;
-            token1 = _token1;
-        } else {
-            token0 = _token1;
-            token1 = _token0;
-        }
+        token = _token;
+        WNative = _wnative;
 
-        IERC20(token0).safeApprove(_router, uint(-1));
-        IERC20(token1).safeApprove(_router, uint(-1));
+        IERC20(token).safeApprove(_router, uint(-1));
     }
 
     function setLockContract(address _lockContract) external onlyOwner {
@@ -52,8 +46,8 @@ contract LockLP is Ownable {
     function lock() external onlyOwner {
         (uint res0, uint res1, ) = IUniswapV2Pair(lp).getReserves();
 
-        uint balance0 = IERC20(token0).balanceOf(address(this));
-        uint balance1 = IERC20(token1).balanceOf(address(this));
+        uint balance0 = IERC20(token).balanceOf(address(this));
+        uint balance1 = address(this).balance;
         require(balance0 > 0 && balance1 > 0, "one of the token balance is 0");
 
         uint amt0 = balance0;
@@ -67,11 +61,9 @@ contract LockLP is Ownable {
         uint amt0Min = amt0.mul(998).div(1000);
         uint amt1Min = amt1.mul(998).div(1000);
 
-        router.addLiquidity(
-            token0,
-            token1,
+        router.addLiquidityETH{value: amt1}(
+            token,
             amt0,
-            amt1,
             amt0Min,
             amt1Min,
             lockContract,
@@ -88,5 +80,18 @@ contract LockLP is Ownable {
         }
 
         IERC20(_token).safeTransfer(_account, _amount);
+    }
+
+    function withdrawNative(address payable _account, uint _amount) external onlyOwner {
+        require(_account != address(0), "invalid parameter");
+
+        if (address(this).balance < _amount) {
+            _amount = address(this).balance;
+        }
+
+        _account.transfer(_amount);
+    }
+
+    receive() external payable {
     }
 }

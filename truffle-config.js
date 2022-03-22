@@ -83,22 +83,34 @@ module.exports = {
           networkCheckTimeout: 100000000,
           websockets: true
       },
+    iotex: {
+          provider: () => new HDWalletProvider(mnemonic, `https://babel-api.mainnet.iotex.io`),
+          network_id: "4689",
+          chain_id: "4689",
+          timeoutBlocks: 300,
+          //confirmations: 2,
+          gasPrice: 1000000000000,
+          skipDryRun: false,
+          networkCheckTimeout: 600000000,
+          websockets: false
+      },
   },
 
   // Set default mocha options here, use special reporters etc.
   mocha: {
     // timeout: 100000
   },
+  plugins: ['truffle-flatten', 'truffle-plugin-verify'],
 
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.6.2",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.6.12",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
        optimizer: {
          enabled: true,
-         runs: 0
+         runs: 20
        },
       //  evmVersion: "byzantium"
       // }
