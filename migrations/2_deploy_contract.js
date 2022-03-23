@@ -4,7 +4,7 @@ const LockETHLP = artifacts.require("LockETHLP");
 
 module.exports = async function (deployer, network, accounts) {
   if (network == 'heco') {
-    deployer.deploy(LockToken, 1668823200);
+    await deployer.deploy(LockToken, 1668823200);
 
     await deployer.deploy(LockLP,
       LockToken.address,
@@ -13,7 +13,7 @@ module.exports = async function (deployer, network, accounts) {
       '0xED7d5F38C79115ca12fe6C0041abb22F0A06C300'  // router
       );
   } else if (network == 'esc') {
-    deployer.deploy(LockToken, 1668823200);
+    await deployer.deploy(LockToken, 1679554835);
 
     await deployer.deploy(LockETHLP,
       LockToken.address,
